@@ -17,34 +17,25 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 ### 1. Clone the repo
 
 ```sh
-git clone https://github.com/YOUR_USERNAME/DOTFILES_CLAUDE.git ~/dev/DOTFILES_CLAUDE
+git clone https://github.com/erikpantzar/DOTFILES_CLAUDE.git ~/dev/DOTFILES_CLAUDE
 ```
 
 ### 2. Symlink
 
-Pick the instructions for your OS.
-
----
-
 #### macOS / Linux
 
 ```sh
-REPO=~/dev/DOTFILES_CLAUDE
-
-# Back up existing files if present
-[ -f ~/.claude/CLAUDE.md ] && mv ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.bak
-[ -d ~/.claude/skills ]    && mv ~/.claude/skills    ~/.claude/skills.bak
-[ -d ~/.claude/- ]         && mv ~/.claude/-         ~/.claude/-.bak
-
-# Create symlinks
-ln -s "$REPO/CLAUDE.md" ~/.claude/CLAUDE.md
-ln -s "$REPO/skills"    ~/.claude/skills
-ln -s "$REPO/-"         ~/.claude/-
+cd ~/dev/DOTFILES_CLAUDE
+./install.sh
 ```
+
+`install.sh` iterates every file and directory in the repo root (skipping `.git`, `README.md`, and itself), backs up anything already in `~/.claude/`, and creates symlinks. Re-running it is safe — existing symlinks are skipped.
 
 ---
 
 #### Windows (PowerShell — run as Administrator)
+
+No install script yet. Link manually:
 
 ```powershell
 $repo = "$env:USERPROFILE\dev\DOTFILES_CLAUDE"
@@ -53,25 +44,23 @@ $claude = "$env:USERPROFILE\.claude"
 # Back up existing files if present
 if (Test-Path "$claude\CLAUDE.md") { Rename-Item "$claude\CLAUDE.md" "CLAUDE.md.bak" }
 if (Test-Path "$claude\skills")    { Rename-Item "$claude\skills"    "skills.bak"    }
-if (Test-Path "$claude\-")         { Rename-Item "$claude\-"         "-.bak"         }
 
-# Create symlinks
+# Create symlinks (Junction for dirs — no Admin needed)
 New-Item -ItemType SymbolicLink -Path "$claude\CLAUDE.md" -Target "$repo\CLAUDE.md"
 New-Item -ItemType Junction     -Path "$claude\skills"    -Target "$repo\skills"
-New-Item -ItemType Junction     -Path "$claude\-"         -Target "$repo\-"
 ```
 
-> On Windows, directory symlinks require either Administrator privileges or Developer Mode enabled. Junctions work without either and are preferred for directories.
+> Add new entries as you add more tracked items to the repo.
 
 ---
 
 ## Verify
 
 ```sh
-ls -la ~/.claude/CLAUDE.md ~/.claude/skills ~/.claude/-
+ls -la ~/.claude/
 ```
 
-Each entry should show `->` pointing into your repo clone.
+Each tracked entry should show `->` pointing into your repo clone.
 
 ## Workflow
 
