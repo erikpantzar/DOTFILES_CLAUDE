@@ -8,7 +8,6 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 |---|---|
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
 | `skills/` | `~/.claude/skills/` |
-| `-/` | `~/.claude/-/` |
 
 > `settings.json` is intentionally excluded — it contains machine-specific permissions and should be managed per-device.
 
