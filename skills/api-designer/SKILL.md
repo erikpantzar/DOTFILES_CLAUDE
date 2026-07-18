@@ -1,5 +1,7 @@
 ---
 name: api-designer
+model: fable
+effort: high
 description: Use when designing REST or GraphQL APIs, creating OpenAPI specifications, or planning API architecture. Invoke for resource modeling, versioning strategies, pagination patterns, error handling standards.
 license: MIT
 metadata:

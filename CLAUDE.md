@@ -37,6 +37,7 @@ If you cannot verify it, flag it explicitly.
 
 # Token efficiency
 - Prefer subagents for research tasks — keep main context clean for implementation
+- When a task splits into independent parts (multiple tickets/files/areas), divide it across parallel subagents by default — don't run them serially in one agent, and don't wait to be asked
 - Use /btw for quick lookups, not main thread
 - Scope investigations narrowly — read the files you need, not the whole repo
 - When context is getting long, suggest /compact before I have to ask
