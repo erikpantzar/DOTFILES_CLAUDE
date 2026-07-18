@@ -4,8 +4,8 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="${HOME}/.claude"
 
-# Files/dirs in the repo root to never symlink
-SKIP=(".git" ".gitignore" "README.md" "install.sh")
+# Files/dirs in the repo root to never symlink into ~/.claude
+SKIP=(".git" ".gitignore" "README.md" "install.sh" "zshrc" ".DS_Store")
 
 is_skipped() {
   local name="$1"
@@ -34,6 +34,20 @@ link() {
   echo "  linked $dest -> $src"
 }
 
+install_zsh_plugins() {
+  if command -v brew &>/dev/null; then
+    for pkg in zsh-autosuggestions zsh-syntax-highlighting; do
+      brew list "$pkg" &>/dev/null || { echo "  installing $pkg via brew"; brew install "$pkg"; }
+    done
+  elif command -v apt-get &>/dev/null; then
+    for pkg in zsh-autosuggestions zsh-syntax-highlighting; do
+      dpkg -s "$pkg" &>/dev/null || { echo "  installing $pkg via apt"; sudo apt-get install -y "$pkg"; }
+    done
+  else
+    echo "  skip zsh-autosuggestions/zsh-syntax-highlighting (no brew or apt-get found)"
+  fi
+}
+
 mkdir -p "$TARGET"
 
 echo "Linking dotfiles into $TARGET"
@@ -45,6 +59,14 @@ for src in "$REPO"/* "$REPO"/.[^.]*; do
   [[ -e "$src" ]] || continue  # skip globs that didn't expand
   link "$src" "$TARGET/$name"
 done
+
+echo ""
+echo "Linking shell config into $HOME"
+link "$REPO/zshrc" "$HOME/.zshrc"
+
+echo ""
+echo "Checking zsh plugins"
+install_zsh_plugins
 
 echo ""
 echo "Done."
