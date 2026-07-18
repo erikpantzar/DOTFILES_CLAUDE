@@ -33,6 +33,8 @@ cd ~/dev/DOTFILES_CLAUDE
 
 `install.sh` iterates every file and directory in the repo root (skipping `.git`, `README.md`, `zshrc`, and itself), backs up anything already in `~/.claude/`, and creates symlinks. It then symlinks `zshrc` to `~/.zshrc`, and installs `zsh-autosuggestions`/`zsh-syntax-highlighting` via `brew` (or `apt` if no `brew`) if they're not already present. Re-running it is safe — existing symlinks are skipped.
 
+Run `./install.sh --dry-run` first to preview what would be backed up, linked, and installed without changing anything.
+
 ---
 
 #### Windows (PowerShell — run as Administrator)

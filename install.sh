@@ -4,6 +4,9 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="${HOME}/.claude"
 
+DRY_RUN=0
+[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
+
 # Files/dirs in the repo root to never symlink into ~/.claude
 SKIP=(".git" ".gitignore" "README.md" "install.sh" "zshrc" ".DS_Store")
 
@@ -26,29 +29,30 @@ link() {
 
   if [[ -e "$dest" ]]; then
     local backup="${dest}.bak"
-    echo "  backup $dest -> $backup"
-    mv "$dest" "$backup"
+    (( DRY_RUN )) && echo "  would back up $dest -> $backup" || { echo "  backup $dest -> $backup"; mv "$dest" "$backup"; }
   fi
 
-  ln -s "$src" "$dest"
-  echo "  linked $dest -> $src"
+  (( DRY_RUN )) && echo "  would link $dest -> $src" || { ln -s "$src" "$dest"; echo "  linked $dest -> $src"; }
 }
 
 install_zsh_plugins() {
   if command -v brew &>/dev/null; then
     for pkg in zsh-autosuggestions zsh-syntax-highlighting; do
-      brew list "$pkg" &>/dev/null || { echo "  installing $pkg via brew"; brew install "$pkg"; }
+      brew list "$pkg" &>/dev/null && continue
+      (( DRY_RUN )) && echo "  would install $pkg via brew" || { echo "  installing $pkg via brew"; brew install "$pkg"; }
     done
   elif command -v apt-get &>/dev/null; then
     for pkg in zsh-autosuggestions zsh-syntax-highlighting; do
-      dpkg -s "$pkg" &>/dev/null || { echo "  installing $pkg via apt"; sudo apt-get install -y "$pkg"; }
+      dpkg -s "$pkg" &>/dev/null && continue
+      (( DRY_RUN )) && echo "  would install $pkg via apt" || { echo "  installing $pkg via apt"; sudo apt-get install -y "$pkg"; }
     done
   else
     echo "  skip zsh-autosuggestions/zsh-syntax-highlighting (no brew or apt-get found)"
   fi
 }
 
-mkdir -p "$TARGET"
+(( DRY_RUN )) && echo "-- dry run: no changes will be made --" && echo ""
+(( DRY_RUN )) || mkdir -p "$TARGET"
 
 echo "Linking dotfiles into $TARGET"
 echo ""
