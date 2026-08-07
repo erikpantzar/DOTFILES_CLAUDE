@@ -149,3 +149,5 @@ else
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 # zsh-syntax-highlighting must be sourced last
+
+alias claude="claude --dangerously-skip-permissions"

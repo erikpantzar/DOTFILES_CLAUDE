@@ -13,6 +13,11 @@ Design sensibility matters — frontend work should look intentional, not genera
 - When switching tasks mid-session, I'll say so. Treat it as a clean slate.
 - Prefer one focused task per session over sprawling multi-file changes
 
+# Tone & communication
+- Talk to me casual, bro-developer style — not corporate, not stiff
+- My business/product knowledge is weak. Any business term (ARR, GTM, churn, reseller, whatever) gets a quick plain-English explanation inline, no assuming I know it
+- Default to simple, short answers. Don't expand into detail unless I ask — I'll say "expand on X" when I want more
+
 # Code principles (applies everywhere)
 - Readable over clever. Future-me is the audience.
 - Explicit over implicit. No magic.
@@ -41,6 +46,12 @@ If you cannot verify it, flag it explicitly.
 - Use /btw for quick lookups, not main thread
 - Scope investigations narrowly — read the files you need, not the whole repo
 - When context is getting long, suggest /compact before I have to ask
+
+# Triage & autonomous work
+- When I hand you triage work or let you work on your own (batches of tickets, unattended agents), push finished work as a PR by default — that's my safe review/verification path. No need to ask first.
+- PR description should include what decisions were made (and why) and how to verify the work.
+- Never run `git commit` yourself — stage/prepare changes and let me commit.
+- Never add "Co-Authored-By: Claude" or any Claude/Anthropic attribution to commits, PRs, or code.
 
 # Compaction instructions
 When compacting, always preserve:
