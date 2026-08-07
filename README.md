@@ -1,6 +1,6 @@
 # DOTFILES_CLAUDE
 
-Version-controlled configuration for [Claude Code](https://claude.ai/code) — the `~/.claude` directory — plus a shared `zshrc`, synced across macOS, Linux, and Windows machines via symlinks.
+Version-controlled configuration for [Claude Code](https://claude.ai/code) — the `~/.claude` directory — plus general dotfiles (shell, git, nvim), synced across macOS, Linux, and Windows machines via symlinks.
 
 ## What's tracked
 
@@ -9,6 +9,9 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
 | `skills/` | `~/.claude/skills/` |
 | `zshrc` | `~/.zshrc` |
+| `gitconfig` | `~/.gitconfig` |
+| `aliases` | `~/.aliases` |
+| `nvim/` | `~/.config/nvim` |
 
 > `settings.json` is intentionally excluded — it contains machine-specific permissions and should be managed per-device.
 
