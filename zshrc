@@ -131,7 +131,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
 # pnpm end
-alias cc="claude"
 
 # zsh-autosuggestions / zsh-syntax-highlighting
 # (installed via Homebrew on macOS, or apt on Debian/Ubuntu Linux)
@@ -150,4 +149,4 @@ else
 fi
 # zsh-syntax-highlighting must be sourced last
 
-alias claude="claude --dangerously-skip-permissions"
+[ -f "$HOME/.aliases" ] && source "$HOME/.aliases"

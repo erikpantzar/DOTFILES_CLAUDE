@@ -1,0 +1,2 @@
+alias cc="claude"
+alias claude="claude --dangerously-skip-permissions"
