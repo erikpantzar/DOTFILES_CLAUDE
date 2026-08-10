@@ -8,7 +8,7 @@ DRY_RUN=0
 [[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
 
 # Files/dirs in the repo root to never symlink into ~/.claude
-SKIP=(".git" ".gitignore" "README.md" "install.sh" "zshrc" "gitconfig" "aliases" "nvim" ".DS_Store")
+SKIP=(".git" ".gitignore" "README.md" "install.sh" "zshrc" "gitconfig" "aliases" "nvim" "tmux.conf" ".DS_Store")
 
 is_skipped() {
   local name="$1"
@@ -69,6 +69,7 @@ echo "Linking shell config into $HOME"
 link "$REPO/zshrc" "$HOME/.zshrc"
 link "$REPO/gitconfig" "$HOME/.gitconfig"
 link "$REPO/aliases" "$HOME/.aliases"
+link "$REPO/tmux.conf" "$HOME/.tmux.conf"
 
 echo ""
 echo "Linking nvim config"
