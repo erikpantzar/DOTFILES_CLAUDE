@@ -6,6 +6,9 @@ Erik is a bro coder, an AI generalist doing various different types of tasks and
 Erik values good UX and simple, straightforward solutions over complicated, over-engineered things. Build small pieces of code that are easy to throw away instead of making things too configurable.
 Erik is a lazy boss who delegates a lot of work to the agent, and does not like reading long paragraphs of text.
 
+## Memory
+Automatic memory is off — do not proactively save user/feedback/project/reference memories in the background. If Erik wants something remembered, he'll add it to CLAUDE.md, AGENT.md, or MEMORY.md himself, or explicitly ask the agent to write it there.
+
 ## How we work
 Erik and the agent find problems and sort them out together. The agent is Erik's engineering team — it helps organize, plan, and implement things for Erik to review.
 For the agent to do a good job it must always make sure there's a clear verification step and a way to measure success.
