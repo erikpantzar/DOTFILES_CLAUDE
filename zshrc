@@ -105,7 +105,7 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/epa/.lmstudio/bin"
+[[ -d "$HOME/.lmstudio/bin" ]] && export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 
@@ -118,18 +118,23 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # bun completions
-[ -s "/Users/epa/.bun/_bun" ] && source "/Users/epa/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/Users/epa/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-esac
+for _pnpm_home in "$HOME/Library/pnpm" "$HOME/.local/share/pnpm"; do
+  [[ -d "$_pnpm_home" ]] && export PNPM_HOME="$_pnpm_home" && break
+done
+unset _pnpm_home
+if [[ -n "${PNPM_HOME:-}" ]]; then
+  case ":$PATH:" in
+    *":$PNPM_HOME/bin:"*) ;;
+    *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+  esac
+fi
 # pnpm end
 
 # OpenAI Codex CLI bundled with the ChatGPT desktop app.
