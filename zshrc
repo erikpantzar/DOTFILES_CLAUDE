@@ -132,6 +132,16 @@ case ":$PATH:" in
 esac
 # pnpm end
 
+# OpenAI Codex CLI bundled with the ChatGPT desktop app.
+_codex_cli_dir="/Applications/ChatGPT.app/Contents/Resources"
+if [[ -x "$_codex_cli_dir/codex" ]]; then
+  case ":$PATH:" in
+    *":$_codex_cli_dir:"*) ;;
+    *) export PATH="$_codex_cli_dir:$PATH" ;;
+  esac
+fi
+unset _codex_cli_dir
+
 # zsh-autosuggestions / zsh-syntax-highlighting
 # (installed via Homebrew on macOS, or apt on Debian/Ubuntu Linux)
 if command -v brew &>/dev/null; then

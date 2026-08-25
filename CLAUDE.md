@@ -50,7 +50,6 @@ If you cannot verify it, flag it explicitly.
 # Triage & autonomous work
 - When I hand you triage work or let you work on your own (batches of tickets, unattended agents), push finished work as a PR by default — that's my safe review/verification path. No need to ask first.
 - PR description should include what decisions were made (and why) and how to verify the work.
-- Never run `git commit` yourself — stage/prepare changes and let me commit.
 - Never add "Co-Authored-By: Claude" or any Claude/Anthropic attribution to commits, PRs, or code.
 
 # Compaction instructions
@@ -59,6 +58,11 @@ When compacting, always preserve:
 - Current test/build status
 - Any decisions we made about approach or architecture
 - Unresolved open questions
+
+# Tools available on this machine
+- Reusable Playwright E2E template: ~/dev/playwright-template (own git repo). Copy into any
+  project needing browser tests/screenshots — see its README.md for setup steps and the
+  screenshot workflow (snap() fixture, test-results/screenshots/).
 
 # --- Project-specific details belong in .claude/CLAUDE.md per repo ---
 # --- Stack, structure, test commands, gotchas go there, not here ---
