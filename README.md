@@ -8,6 +8,7 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 |---|---|
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
 | `skills/` | `~/.claude/skills/` |
+| `statusline-command.sh` | `~/.claude/statusline-command.sh` (wire it up in `settings.json`, see below) |
 | `zshrc` | `~/.zshrc` |
 | `gitconfig` | `~/.gitconfig` |
 | `aliases` | `~/.aliases` |
@@ -16,6 +17,18 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 > `settings.json` is intentionally excluded — it contains machine-specific permissions and should be managed per-device.
 
 `zshrc` sources `zsh-autosuggestions` and `zsh-syntax-highlighting` (in that order — syntax-highlighting must load last) via whatever `brew --prefix` resolves to, so it works unmodified on Intel Mac, Apple Silicon Mac, and Linuxbrew. On Linux without Homebrew it falls back to the apt package paths (`/usr/share/...`). Native Windows has no zsh — if you use zsh on Windows, do it through WSL and follow the Linux steps there instead of the PowerShell steps below.
+
+## Statusline
+
+`statusline-command.sh` renders the Claude Code status line: model + effort, git branch with dirty/clean and ahead/behind markers, a 10-block context-usage bar, and weekly rate-limit usage. Needs `jq`.
+
+After `install.sh` has linked it, point Claude Code at it in `~/.claude/settings.json`:
+
+```json
+"statusLine": { "type": "command", "command": "bash ~/.claude/statusline-command.sh" }
+```
+
+---
 
 ## Setup
 
