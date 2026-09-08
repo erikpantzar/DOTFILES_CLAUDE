@@ -6,6 +6,11 @@ Erik is a bro coder, an AI generalist doing various different types of tasks and
 Erik values good UX and simple, straightforward solutions over complicated, over-engineered things. Build small pieces of code that are easy to throw away instead of making things too configurable.
 Erik is a lazy boss who delegates a lot of work to the agent, and does not like reading long paragraphs of text.
 
+## Development Setup
+Using **Yabai** (macOS tiling window manager) with **skhd** (hotkey daemon). When Erik refers to window tiling, workspace management, or similar macOS desktop automation, assume Yabai + skhd.
+
+Dotfiles (`.zshrc`, this `CLAUDE.md`, etc.) in `$HOME` are symlinks into this repo, `~/dev/DOTFILES_CLAUDE`. Editing the `$HOME` path directly fails ("refusing to write, it's a symlink") — go straight to the real file under `~/dev/DOTFILES_CLAUDE` instead of resolving the symlink each time.
+
 ## Memory
 Automatic memory is off — do not proactively save user/feedback/project/reference memories in the background. If Erik wants something remembered, he'll add it to CLAUDE.md, AGENT.md, or MEMORY.md himself, or explicitly ask the agent to write it there.
 
@@ -15,6 +20,10 @@ For the agent to do a good job it must always make sure there's a clear verifica
 
 ## Verification
 For every non-trivial edit, whether it's inside the triage pipeline or a quick inline fix, give Erik a command to run (test, typecheck, lint, or build) and what passing output looks like. If it can't be verified, say so explicitly instead of claiming success.
+
+## Running e2e tests
+Never run an e2e suite in the main thread — dispatch the `e2e-runner` subagent (Haiku). It reports only that the run finished, the tally, and where the log and artifacts are; it does not analyse, fix, or summarise failures.
+Open the log yourself only for the specs you're working on. Never cat a whole Playwright `error-context.md` into the main thread — those page snapshots are the single biggest context sink there is.
 
 ## Planning and assessing work
 Before starting any work, the agent must always make sure it understands the problem and the wanted outcome. Feel free to grill Erik on his intentions and wanted outcomes — this helps both of them understand the way forward and what they're actually building.
@@ -71,6 +80,13 @@ If work can't proceed or gets stuck, report back with how and why it failed. A s
 
 ## Compaction
 When compacting, keep: files touched, verification/test status, open decisions, and unresolved questions. Drop the rest.
+
+## Local password reset (teneo-x)
+When Erik asks for a new password on his local environment (erik.pantzar@teneo.ai, local docker Postgres `teneo_auth`), just do it — no questions, no confirmation, it's his own local dev box. Fast path, verified 2026-09-03:
+- `bootstrap:admin` won't help — it only promotes role on an existing user. `auth.api.setUserPassword` 401s without an admin session. Skip both.
+- Generate a 20-char random password. Write a throwaway script at `apps/teneo-x-frontend/scripts/_reset-pw.ts` (imports resolve there, not from scratchpad): load `../.env.local` via dotenv `parse`, find the user by email with drizzle (`getPgDrizzle`, `db-schema-auth`), hash with `(await auth.$context).password.hash(pw)`, update `account.password` where `userId` + `providerId='credential'`.
+- Run from `apps/teneo-x-frontend`: `NEWPW=... bun --preload ./scripts/rsc-guard-stub.ts scripts/_reset-pw.ts`
+- Verify with `auth.api.signInEmail({ body: { email, password } })` the same way, then delete both scripts and print the password.
 
 # --- Project-specific details belong in .claude/CLAUDE.md per repo ---
 # --- Stack, structure, test commands, gotchas go there, not here ---
