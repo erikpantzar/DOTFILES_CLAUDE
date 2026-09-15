@@ -4,11 +4,6 @@ input=$(cat)
 model=$(echo "$input" | jq -r '.model.display_name')
 effort=$(echo "$input" | jq -r '.effort.level // empty')
 
-if [ -n "$TMUX_PANE" ]; then
-  mkdir -p "${TMPDIR:-/tmp}/claude-cycle"
-  printf '%s\n%s\n' "$model" "$effort" > "${TMPDIR:-/tmp}/claude-cycle/${TMUX_PANE#%}"
-fi
-
 proj_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 cur_dir=$(echo "$input" | jq -r '.workspace.current_dir // empty')
 worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
