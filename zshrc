@@ -165,3 +165,13 @@ fi
 # zsh-syntax-highlighting must be sourced last
 
 [ -f "$HOME/.aliases" ] && source "$HOME/.aliases"
+
+# Stop git status polling (Claude Code, IDEs, etc.) from generating spurious
+# FSEvents on macOS that FSEvents-based watchers (webpack, Turbopack, tsc
+# --watch, nodemon) misread as file changes and rebuild-loop on.
+export GIT_OPTIONAL_LOCKS=0
+
+# Ghostty: pick (or create) a tmux session on open
+if [[ -o interactive && -z "$TMUX" && "$TERM_PROGRAM" == "ghostty" ]] && command -v tmux-pick >/dev/null; then
+  tmux-pick
+fi

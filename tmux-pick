@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+
+command -v tmux >/dev/null || exit 0
+
+sessions=$(tmux list-sessions -F $'#{session_name}\t#{session_windows} windows#{?session_attached,  (attached),}' 2>/dev/null)
+
+if [[ -z "$sessions" ]]; then
+  exec tmux new-session -s main
+fi
+
+if ! command -v fzf >/dev/null; then
+  exec tmux attach
+fi
+
+out=$(printf '%s\n%s\n' "$sessions" $'+\tnew session' | fzf \
+  --height=40% --reverse --no-info \
+  --delimiter=$'\t' --with-nth=1.. --tabstop=12 \
+  --prompt='tmux > ' \
+  --header='enter: attach · type a new name + enter: create · esc: plain shell' \
+  --print-query)
+rc=$?
+
+(( rc == 130 )) && exit 0
+
+query=${out%%$'\n'*}
+selection=${out#*$'\n'}
+[[ "$selection" == "$out" ]] && selection=""
+
+if [[ -z "$selection" || "$selection" == $'+\t'* ]]; then
+  exec tmux new-session -A ${query:+-s "$query"}
+fi
+
+exec tmux attach -t "=${selection%%$'\t'*}"
