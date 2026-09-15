@@ -4,6 +4,11 @@ input=$(cat)
 model=$(echo "$input" | jq -r '.model.display_name')
 effort=$(echo "$input" | jq -r '.effort.level // empty')
 
+if [ -n "$TMUX_PANE" ]; then
+  mkdir -p "${TMPDIR:-/tmp}/claude-cycle"
+  printf '%s\n%s\n' "$model" "$effort" > "${TMPDIR:-/tmp}/claude-cycle/${TMUX_PANE#%}"
+fi
+
 proj_dir=$(echo "$input" | jq -r '.workspace.project_dir // empty')
 cur_dir=$(echo "$input" | jq -r '.workspace.current_dir // empty')
 worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
@@ -30,6 +35,32 @@ ICON_DIRTY='🔥'
 ICON_CLEAN='✨'
 ICON_AHEAD='⇡'
 ICON_BEHIND='⇣'
+
+RESET=$'\033[0m'
+DIM=$'\033[2m'
+BOLD=$'\033[1m'
+
+fg() { printf '\033[38;2;%s;%s;%sm' "$1" "$2" "$3"; }
+
+C_OPUS=$(fg 139 92 246)
+C_SONNET=$(fg 14 165 233)
+C_HAIKU=$(fg 22 163 74)
+C_FABLE=$(fg 234 88 12)
+C_MODEL_OTHER=$(fg 148 163 184)
+
+C_CTX_LOW=$(fg 22 163 74)
+C_CTX_MID=$(fg 217 119 6)
+C_CTX_HIGH=$(fg 234 88 12)
+C_CTX_CRIT=$(fg 220 38 38)
+C_CTX_EMPTY=$(fg 203 213 225)
+
+repeat_char() {
+  local char="$1" count="$2" out="" i
+  for ((i = 0; i < count; i++)); do
+    out="$out$char"
+  done
+  printf '%s' "$out"
+}
 
 git=""
 if git -C "$cur_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -59,12 +90,23 @@ if [ -n "$used" ]; then
   bar_width=10
   filled=$(printf '%.0f' "$(echo "$used $bar_width" | awk '{print ($1/100)*$2}')")
   [ "$filled" -gt "$bar_width" ] && filled=$bar_width
+  [ "$filled" -lt 0 ] && filled=0
   empty=$((bar_width - filled))
-  bar=$(printf '█%.0s' $(seq 1 $filled) 2>/dev/null)
-  bar="$bar$(printf '░%.0s' $(seq 1 $empty) 2>/dev/null)"
-  ctx="$bar $(printf '%.0f' "$used")%"
+
+  used_int=$(printf '%.0f' "$used")
+  if [ "$used_int" -ge 90 ]; then
+    ctx_color="$C_CTX_CRIT"
+  elif [ "$used_int" -ge 75 ]; then
+    ctx_color="$C_CTX_HIGH"
+  elif [ "$used_int" -ge 50 ]; then
+    ctx_color="$C_CTX_MID"
+  else
+    ctx_color="$C_CTX_LOW"
+  fi
+
+  ctx="${BOLD}${ctx_color}$(repeat_char '█' "$filled")${RESET}${C_CTX_EMPTY}$(repeat_char '░' "$empty")${RESET} ${BOLD}${ctx_color}${used_int}%${RESET}"
 else
-  ctx="n/a"
+  ctx="${DIM}n/a${RESET}"
 fi
 
 # Formats a reset timestamp (Unix epoch seconds, or ISO-8601 string) as a
@@ -102,14 +144,21 @@ if [ -z "$rl" ]; then
   rl="RL: n/a"
 fi
 
+case "$(echo "$model" | tr '[:upper:]' '[:lower:]')" in
+  *opus*) model_color="$C_OPUS" ;;
+  *sonnet*) model_color="$C_SONNET" ;;
+  *haiku*) model_color="$C_HAIKU" ;;
+  *fable*) model_color="$C_FABLE" ;;
+  *) model_color="$C_MODEL_OTHER" ;;
+esac
+
+model_display="${BOLD}${model_color}${model}${RESET}"
 if [ -n "$effort" ]; then
-  model_display="$model $effort"
-else
-  model_display="$model"
+  model_display="$model_display ${model_color}${DIM}${effort}${RESET}"
 fi
 
 if [ -n "$git" ]; then
-  printf '\033[2m%s\033[0m \033[2m%s\033[0m \033[2m%s\033[0m \033[2m%s\033[0m' "$model_display" "$git" "$ctx" "$rl"
+  printf '%s %s%s%s %s %s%s%s' "$model_display" "$DIM" "$git" "$RESET" "$ctx" "$DIM" "$rl" "$RESET"
 else
-  printf '\033[2m%s\033[0m \033[2m%s\033[0m \033[2m%s\033[0m' "$model_display" "$ctx" "$rl"
+  printf '%s %s %s%s%s' "$model_display" "$ctx" "$DIM" "$rl" "$RESET"
 fi
