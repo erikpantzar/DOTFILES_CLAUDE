@@ -9,6 +9,7 @@ Version-controlled configuration for [Claude Code](https://claude.ai/code) — t
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
 | `skills/` | `~/.claude/skills/` |
 | `statusline-command.sh` | `~/.claude/statusline-command.sh` (wire it up in `settings.json`, see below) |
+| `turn-sound.sh` | `~/.claude/turn-sound.sh` (Stop + UserPromptSubmit hooks: quiet Tink under 60s, Glass for longer turns) |
 | `zshrc` | `~/.zshrc` |
 | `gitconfig` | `~/.gitconfig` |
 | `aliases` | `~/.aliases` |
